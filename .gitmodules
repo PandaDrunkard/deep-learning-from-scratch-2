@@ -1,0 +1,3 @@
+[submodule "sample"]
+	path = sample
+	url = git@github.com:oreilly-japan/deep-learning-from-scratch-2.git
