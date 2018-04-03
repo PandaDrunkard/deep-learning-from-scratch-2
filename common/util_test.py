@@ -4,7 +4,7 @@ import sys, os
 sys.path.append(os.pardir)
 from common.np import *
 from common.util import im2col, col2im, clip_grads, preprocess, \
-    convert_on_hot, create_co_matrix, cos_similarity, most_similar
+    convert_on_hot, create_co_matrix, cos_similarity, most_similar, ppmi
 
 class UtilTest(unittest.TestCase):
     def test_im2col_transforms(self):
@@ -88,6 +88,27 @@ class UtilTest(unittest.TestCase):
         C = create_co_matrix(corpus, vocab_size)
 
         most_similar('you', w2id, id2w, C, top=5)
+
+    def test_ppmi(self):
+        text = 'you say goodbye and I say hello.'
+        corpus, w2id, id2w = preprocess(text)
+        vocab_size = len(w2id)
+        C = create_co_matrix(corpus, vocab_size)
+        W = ppmi(C)
+        
+        W = np.around(W, 3)
+
+        expected = np.array([
+            [0.    ,1.807 ,0.    ,0.    ,0.    ,0.    ,0.   ],
+            [1.807 ,0.    ,0.807 ,0.    ,0.807 ,0.807 ,0.   ],
+            [0.    ,0.807 ,0.    ,1.807 ,0.    ,0.    ,0.   ],
+            [0.    ,0.    ,1.807 ,0.    ,1.807 ,0.    ,0.   ],
+            [0.    ,0.807 ,0.    ,1.807 ,0.    ,0.    ,0.   ],
+            [0.    ,0.807 ,0.    ,0.    ,0.    ,0.    ,2.807],
+            [0.    ,0.    ,0.    ,0.    ,0.    ,2.807 ,0.   ]
+        ])
+
+        np.testing.assert_array_almost_equal(W, expected)
 
 if __name__ == '__main__':
     unittest.main()
