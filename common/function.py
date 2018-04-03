@@ -1,5 +1,6 @@
-# coding: utf-8
-import numpy as np
+import sys, os
+sys.path.append(os.pardir)
+from common.np import *
 
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))

@@ -1,9 +1,9 @@
 import time
-import numpy as np
 import matplotlib.pyplot as plt
 
 import sys, os
 sys.path.append(os.pardir)
+from common.np import *
 from common.util import clip_grads
 
 class Trainer:

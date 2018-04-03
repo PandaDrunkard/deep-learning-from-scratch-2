@@ -1,4 +1,6 @@
-import numpy as np
+import sys, os
+sys.path.append(os.pardir)
+from common.np import *
 
 def im2col(input_data, filter_h, filter_w, stride=1, pad=0):
     """

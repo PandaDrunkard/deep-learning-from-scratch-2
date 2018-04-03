@@ -1,9 +1,8 @@
-import numpy as np
-
 import sys, os
 sys.path.append(os.pardir)
 from common.function import sigmoid, softmax, cross_entropy_error
 from common.util import im2col, col2im
+from common.np import *
 
 class MatMul:
     def __init__(self, W):

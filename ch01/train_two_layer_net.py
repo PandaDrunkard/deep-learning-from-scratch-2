@@ -1,9 +1,8 @@
-import numpy as np
-
 import sys, os
 sys.path.append(os.pardir)
 from common.trainer import Trainer
 from common.optimizer import SGD
+
 from dataset import spiral
 from two_layer_net import TwoLayerNet
 
