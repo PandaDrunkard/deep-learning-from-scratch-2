@@ -3,7 +3,7 @@ import unittest
 import sys, os
 sys.path.append(os.pardir)
 from common.np import *
-from common.util import im2col, col2im, clip_grads, preprocess
+from common.util import im2col, col2im, clip_grads, preprocess, convert_on_hot
 
 class UtilTest(unittest.TestCase):
     def test_im2col_transforms(self):
@@ -29,7 +29,23 @@ class UtilTest(unittest.TestCase):
         self.assertTrue((ex_corpus == corpus).all())
         self.assertDictEqual(ex_w2id, word_to_id)
         self.assertDictEqual(ex_id2w, id_to_word)
+    
+    def test_convert_one_hot(self):
+        text = 'you say goodbye and I say hello.'
+        corpus, w2id, id2w = preprocess(text)
 
+        one_hot = convert_on_hot(corpus, len(w2id))
+
+        self.assertTrue((np.array([
+            [1, 0, 0, 0, 0, 0, 0],
+            [0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 1, 0, 0, 0, 0],
+            [0, 0, 0, 1, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0],
+            [0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 1, 0],
+            [0, 0, 0, 0, 0, 0, 1]
+        ]) == one_hot).all())
 
 if __name__ == '__main__':
     unittest.main()

@@ -65,3 +65,12 @@ def preprocess(text):
     corpus = np.array([word_to_id[w] for w in words])
 
     return corpus, word_to_id, id_to_word
+
+def convert_on_hot(corpus, vocab_size):
+    N = corpus.shape[0]
+    one_hot = np.zeros((N, vocab_size), dtype=np.int32)
+
+    for idx, word_id in enumerate(corpus):
+        one_hot[idx, word_id] = 1
+
+    return one_hot
