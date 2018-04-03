@@ -3,7 +3,7 @@ import unittest
 import sys, os
 sys.path.append(os.pardir)
 from common.np import *
-from common.util import im2col, col2im, clip_grads, preprocess, convert_on_hot
+from common.util import im2col, col2im, clip_grads, preprocess, convert_on_hot, create_co_matrix
 
 class UtilTest(unittest.TestCase):
     def test_im2col_transforms(self):
@@ -46,6 +46,23 @@ class UtilTest(unittest.TestCase):
             [0, 0, 0, 0, 0, 1, 0],
             [0, 0, 0, 0, 0, 0, 1]
         ]) == one_hot).all())
+
+    def test_create_co_matrix(self):
+        text = 'you say goodbye and I say hello.'
+        corpus, w2id, id2w = preprocess(text)
+
+        co_matrix = create_co_matrix(corpus, len(w2id), window_size=1)
+
+        self.assertTrue((np.array([
+            [0, 1, 0, 0, 0, 0, 0],
+            [1, 0, 1, 0, 1, 1, 0],
+            [0, 1, 0, 1, 0, 0, 0],
+            [0, 0, 1, 0, 1, 0, 0],
+            [0, 1, 0, 1, 0, 0, 0],
+            [0, 1, 0, 0, 0, 0, 1],
+            [0, 0, 0, 0, 0, 1, 0]
+        ]) == co_matrix).all())       
+
 
 if __name__ == '__main__':
     unittest.main()

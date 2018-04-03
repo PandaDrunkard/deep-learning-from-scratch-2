@@ -74,3 +74,22 @@ def convert_on_hot(corpus, vocab_size):
         one_hot[idx, word_id] = 1
 
     return one_hot
+
+def create_co_matrix(corpus, vocab_size, window_size=1):
+    corpus_size = len(corpus)
+    co_matrix = np.zeros((vocab_size, vocab_size), dtype=np.int32)
+
+    for idx, word_id in enumerate(corpus):
+        for i in range(1, window_size + 1):
+            li = idx - 1
+            ri = idx + 1
+
+            if li >= 0:
+                l_word_id = corpus[li]
+                co_matrix[word_id, l_word_id] += 1
+            
+            if ri < corpus_size:
+                r_word_id = corpus[ri]
+                co_matrix[word_id, r_word_id] += 1
+    
+    return co_matrix
