@@ -3,7 +3,8 @@ import unittest
 import sys, os
 sys.path.append(os.pardir)
 from common.np import *
-from common.util import im2col, col2im, clip_grads, preprocess, convert_on_hot, create_co_matrix, cos_similarity
+from common.util import im2col, col2im, clip_grads, preprocess, \
+    convert_on_hot, create_co_matrix, cos_similarity, most_similar
 
 class UtilTest(unittest.TestCase):
     def test_im2col_transforms(self):
@@ -79,6 +80,14 @@ class UtilTest(unittest.TestCase):
 
         self.assertEqual(cos_similarity(c0, c0), expected_c0)
         self.assertEqual(cos_similarity(c0, c1), expected_c1)
+
+    def test_most_similar(self):
+        text = 'you say goodbye and I say hello.'
+        corpus, w2id, id2w = preprocess(text)
+        vocab_size = len(w2id)
+        C = create_co_matrix(corpus, vocab_size)
+
+        most_similar('you', w2id, id2w, C, top=5)
 
 if __name__ == '__main__':
     unittest.main()
