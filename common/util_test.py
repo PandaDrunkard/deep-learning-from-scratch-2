@@ -95,7 +95,7 @@ class UtilTest(unittest.TestCase):
         vocab_size = len(w2id)
         C = create_co_matrix(corpus, vocab_size)
         W = ppmi(C)
-        
+
         W = np.around(W, 3)
 
         expected = np.array([
@@ -109,6 +109,7 @@ class UtilTest(unittest.TestCase):
         ])
 
         np.testing.assert_array_almost_equal(W, expected)
+        
 
 if __name__ == '__main__':
     unittest.main()
