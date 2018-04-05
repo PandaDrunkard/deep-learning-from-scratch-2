@@ -141,3 +141,16 @@ def ppmi(C, verbose=False, eps=1e-8):
                     print('%.1f%% done' % (100 * cnt / total))
     
     return M
+
+def create_contexts_target(corpus, windows_size=1):
+    target = corpus[windows_size:-windows_size]
+    contexts = []
+
+    for idx in range(windows_size, len(corpus) - windows_size):
+        cs = []
+        for t in range(-windows_size, windows_size + 1):
+            if t != 0:
+                cs.append(corpus[idx + t])
+        contexts.append(cs)
+    
+    return np.array(contexts), np.array(target)

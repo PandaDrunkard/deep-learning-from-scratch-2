@@ -4,7 +4,8 @@ import sys, os
 sys.path.append(os.pardir)
 from common.np import *
 from common.util import im2col, col2im, clip_grads, preprocess, \
-    convert_on_hot, create_co_matrix, cos_similarity, most_similar, ppmi
+    convert_on_hot, create_co_matrix, cos_similarity, most_similar, ppmi, \
+    create_contexts_target
 
 class UtilTest(unittest.TestCase):
     def test_im2col_transforms(self):
@@ -109,6 +110,25 @@ class UtilTest(unittest.TestCase):
         ])
 
         np.testing.assert_array_almost_equal(W, expected)
+    
+    def test_create_contexts_target(self):
+        text = 'you say goodbye and I say hello.'
+        corpus, w2id, id2w = preprocess(text)
+
+        contexts, target = create_contexts_target(corpus)
+
+        expected_contexts = np.array([
+            [0, 2],
+            [1, 3],
+            [2, 4],
+            [3, 1],
+            [4, 5],
+            [1, 6]
+        ])
+        expected_target = [1, 2, 3, 4, 1, 5]
+
+        np.testing.assert_array_almost_equal(contexts, expected_contexts)
+        np.testing.assert_array_almost_equal(target, expected_target)
         
 
 if __name__ == '__main__':
