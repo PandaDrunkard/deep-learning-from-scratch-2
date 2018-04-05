@@ -66,12 +66,26 @@ def preprocess(text):
 
     return corpus, word_to_id, id_to_word
 
-def convert_on_hot(corpus, vocab_size):
+def convert_one_hot(corpus, vocab_size):
     N = corpus.shape[0]
-    one_hot = np.zeros((N, vocab_size), dtype=np.int32)
 
-    for idx, word_id in enumerate(corpus):
-        one_hot[idx, word_id] = 1
+    # 通常のone-hot-vector
+    # [0, 1, 2, 3]
+    if corpus.ndim == 1:
+        one_hot = np.zeros((N, vocab_size), dtype=np.int32)
+        for idx, word_id in enumerate(corpus):
+            one_hot[idx, word_id] = 1
+
+    # word2vecの入力層(contexts)に使うone-hot-vector
+    # [[0, 2], [2, 3]]
+    if corpus.ndim == 2:
+        C = corpus.shape[1]
+        one_hot = np.zeros((N, C, vocab_size), dtype=np.int32)
+        for idx_0, word_ids in enumerate(corpus):
+            # word_ids: [2, 3]
+            for idx_1, word_id in enumerate(word_ids):
+                # word_id: 2
+                one_hot[idx_0, idx_1, word_id] = 1
 
     return one_hot
 
@@ -142,13 +156,13 @@ def ppmi(C, verbose=False, eps=1e-8):
     
     return M
 
-def create_contexts_target(corpus, windows_size=1):
-    target = corpus[windows_size:-windows_size]
+def create_contexts_target(corpus, window_size=1):
+    target = corpus[window_size:-window_size]
     contexts = []
 
-    for idx in range(windows_size, len(corpus) - windows_size):
+    for idx in range(window_size, len(corpus) - window_size):
         cs = []
-        for t in range(-windows_size, windows_size + 1):
+        for t in range(-window_size, window_size + 1):
             if t != 0:
                 cs.append(corpus[idx + t])
         contexts.append(cs)

@@ -4,7 +4,7 @@ import sys, os
 sys.path.append(os.pardir)
 from common.np import *
 from common.util import im2col, col2im, clip_grads, preprocess, \
-    convert_on_hot, create_co_matrix, cos_similarity, most_similar, ppmi, \
+    convert_one_hot, create_co_matrix, cos_similarity, most_similar, ppmi, \
     create_contexts_target
 
 class UtilTest(unittest.TestCase):
@@ -36,7 +36,7 @@ class UtilTest(unittest.TestCase):
         text = 'you say goodbye and I say hello.'
         corpus, w2id, id2w = preprocess(text)
 
-        one_hot = convert_on_hot(corpus, len(w2id))
+        one_hot = convert_one_hot(corpus, len(w2id))
 
         self.assertTrue((np.array([
             [1, 0, 0, 0, 0, 0, 0],
@@ -48,6 +48,15 @@ class UtilTest(unittest.TestCase):
             [0, 0, 0, 0, 0, 1, 0],
             [0, 0, 0, 0, 0, 0, 1]
         ]) == one_hot).all())
+
+    def test_convert_one_hot_contexts(self):
+        text = 'you say goodbye and I say hello.'
+        corpus, w2id, id2w = preprocess(text)
+        contexts, target = create_contexts_target(corpus, 1)
+
+        contexts = convert_one_hot(contexts, len(w2id))
+
+        self.assertEqual(contexts.shape, (6, 2, 7))
 
     def test_create_co_matrix(self):
         text = 'you say goodbye and I say hello.'
