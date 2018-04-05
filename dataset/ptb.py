@@ -8,7 +8,9 @@ except ImportError:
 import pickle
 import numpy as np
 from common.config import GPU
-from common.util import to_gpu
+
+if GPU:
+    from common.util import to_gpu
 
 url_base = 'https://raw.githubusercontent.com/tomsercu/lstm/master/data/'
 key_file = {
