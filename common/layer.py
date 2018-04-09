@@ -144,6 +144,11 @@ class Embedding:
         self.idx = None
     
     def forward(self, idx):
+        """
+        idx: int or int-array
+        =====
+        returns: 1-dim array (when idx is int), 2-dim array (when idx is int-array)
+        """
         W, = self.params
         out = W[idx]
         self.idx = idx
@@ -152,6 +157,7 @@ class Embedding:
     def backward(self, dout):
         dW, = self.grads
         dW[...] = 0
-        dW[self.idx] = dout
+        # for mini-batch
+        np.add.at(dW, self.idx, dout)
         return None
 

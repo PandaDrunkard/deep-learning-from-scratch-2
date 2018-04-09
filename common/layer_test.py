@@ -29,5 +29,16 @@ class LayerTest(unittest.TestCase):
         np.testing.assert_array_almost_equal(dout.shape, (3,))
         np.testing.assert_array_almost_equal(embedding.grads[0][idx], dout)
 
+    
+    def test_embedding_array(self):
+        W = np.random.randn(7, 3)
+        idx = [0, 1, 0]
+
+        embedding = Embedding(W)
+        dout = embedding.forward(idx)
+        embedding.backward(dout)
+
+        np.testing.assert_array_almost_equal(dout.shape, (3, 3))
+
 if __name__ == '__main__':
     unittest.main()
