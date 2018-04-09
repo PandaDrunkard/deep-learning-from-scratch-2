@@ -1,47 +1,33 @@
-from layer import Convolution, Pooling, Affine
-import numpy as np
+import unittest
 
+import sys, os
+sys.path.append(os.pardir)
 
-def affine_test():
-    print("========== Affine ==========")
-    x = np.random.randn(99,30,12,12)
-    W = np.random.randn(30*12*12, 100)
-    b = np.random.randn(100)
+from common.layer import MatMul, Embedding
+from common.np import *
 
-    layer = Affine(W, b)
+class LayerTest(unittest.TestCase):
+    def test_matmul(self):
+        W = np.random.randn(7, 3)
+        x = np.random.randn(10, 7)
 
-    dout = layer.forward(x)
-    dx = layer.backward(dout)
+        matmul = MatMul(W)
+        dout = matmul.forward(x)
+        dx = matmul.backward(dout)
 
-    print(dout.shape)
-    print(dx.shape)
-    
-def convolution_test():
-    print("========== Convolution ==========")
-    x = np.random.randn(99, 1, 28, 28)
-    W = np.random.randn(30, 1, 5, 5)
-    b = np.zeros(30)
+        np.testing.assert_array_almost_equal(dout.shape, (10, 3))
+        np.testing.assert_array_almost_equal(dx.shape, (10, 7))
 
-    layer = Convolution(W, b, stride=1, pad=0)
+    def test_embedding(self):
+        W = np.random.randn(7, 3)
+        idx = 1
 
-    dout = layer.forward(x)
-    dx = layer.backward(dout)
+        embedding = Embedding(W)
+        dout = embedding.forward(idx)
+        embedding.backward(dout)
 
-    print(dout.shape)
-    print(dx.shape)
+        np.testing.assert_array_almost_equal(dout.shape, (3,))
+        np.testing.assert_array_almost_equal(embedding.grads[0][idx], dout)
 
-def pooling_test():
-    print("========== Pooling ==========")
-    x = np.random.randn(99,30,24,24)
-    
-    layer = Pooling(pool_h=2, pool_w=2, stride=2, pad=0)
-
-    dout = layer.forward(x)
-    dx = layer.backward(dout)
-
-    print(dout.shape)
-    print(dx.shape)
-
-affine_test()
-convolution_test()
-pooling_test()
+if __name__ == '__main__':
+    unittest.main()
